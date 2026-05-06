@@ -1,12 +1,96 @@
-# Desenvolvimento Backend
+# PUCPR Backend FastAPI
 
-Código final da aula 04 - Segurança e JWT
+Implementacao em FastAPI do trabalho final da disciplina de Desenvolvimento de Backend - PUCPR.
 
-Nesta aula, vimos como integrar o Spring Security para adicionar autenticação JJWT
+> Branch: 05-entrega-final
 
-## Modificações
+## Integrantes
 
-* Spring Security e JJWT adicionados ao `build.gradle.kts`
-* Veja o pacote `security` para entender o security filter e a security config
-* Anotações de segurança incluídas nos controllers
-* Verifique o método `updateUser` para autenticação avançada
+- Caio César Lima Borges
+- Myrelle Silva Lopes
+
+## Link apresentação
+
+- https://
+
+## Decisoes principais
+
+- arquitetura: monolito modular
+- modulo de negocio: `identity_access_management`
+- persistencia: PostgreSQL (`pucbr_backend`, schema `public`)
+- seguranca: JWT HMAC com secret externalizado
+- senha: hash PBKDF2 com fallback de verificacao para texto puro legado
+- contrato preservado nas rotas e nos status codes relevantes do sistema anterior
+
+## Estrutura
+
+```text
+app/
+  core/
+  db/
+  modules/
+    identity_access_management/
+alembic/
+tests/
+```
+
+## Requisitos
+
+- Python 3.14+
+- PostgreSQL acessivel localmente
+
+## Configuracao
+
+1. Crie o banco `pucbr_backend` no PostgreSQL.
+2. Use o schema `public`.
+3. Copie `.env.example` para `.env` e ajuste credenciais e secret.
+
+Exemplo de URL:
+
+```env
+DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/pucbr_backend
+```
+
+## Instalacao
+
+```powershell
+python -m venv .venv
+.venv\Scripts\python -m pip install -e .[dev]
+```
+
+## Migracoes
+
+Aplicar a migration inicial:
+
+```powershell
+python -m alembic upgrade head
+```
+
+## Executar a API
+
+```powershell
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Interface principal:
+
+- Swagger UI na raiz: `http://127.0.0.1:8000/`
+- healthcheck: `http://127.0.0.1:8000/health`
+
+## Testes
+
+```powershell
+python -m pytest
+```
+
+## Endpoints principais
+
+- `POST /api/users`
+- `GET /api/users`
+- `GET /api/users/{id}`
+- `PATCH /api/users/{id}`
+- `DELETE /api/users/{id}`
+- `PUT /api/users/{id}/roles/{role_name}`
+- `POST /api/users/login`
+- `GET /api/roles`
+- `POST /api/roles`
