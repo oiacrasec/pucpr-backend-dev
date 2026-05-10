@@ -11,7 +11,7 @@ Implementacao em FastAPI do trabalho final da disciplina de Desenvolvimento de B
 
 ## Link apresentação
 
-- https://
+- https://youtu.be/HZGrY7pW0UE
 
 ## Decisoes principais
 
@@ -48,7 +48,7 @@ tests/
 Exemplo de URL:
 
 ```env
-DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/pucbr_backend
+DATABASE_URL=postgresql+psycopg://postgres:sua-senha@localhost:5432/pucbr_backend
 ```
 
 ## Instalacao
