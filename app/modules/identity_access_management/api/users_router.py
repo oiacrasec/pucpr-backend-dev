@@ -2,16 +2,19 @@ from __future__ import annotations
 
 from typing import Optional, Union
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, File, Response, UploadFile, status
+from fastapi.responses import StreamingResponse
 
-from app.modules.identity_access_management.api.dependencies import get_user_service
+from app.modules.identity_access_management.api.dependencies import get_avatar_service, get_user_service
 from app.modules.identity_access_management.domain.sort_direction import SortDirection
 from app.modules.identity_access_management.policies.access import require_admin, require_self_or_admin
+from app.modules.identity_access_management.schemas.avatar import AvatarResponse
 from app.modules.identity_access_management.schemas.user import (
     CreateUserRequest,
     UpdateUserRequest,
     UserResponse,
 )
+from app.modules.identity_access_management.services.avatar_service import AvatarService
 from app.modules.identity_access_management.services.user_service import UserService
 
 
@@ -85,4 +88,60 @@ def add_role_to_user(
     added = service.add_role(user_id, role_name)
     if not added:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return Response(status_code=status.HTTP_200_OK)
+
+
+@router.post("/{user_id}/avatar", response_model=AvatarResponse, status_code=status.HTTP_201_CREATED)
+def upload_user_avatar(
+    user_id: int,
+    file: UploadFile = File(...),
+    _: object = Depends(require_self_or_admin),
+    service: AvatarService = Depends(get_avatar_service),
+) -> AvatarResponse:
+    """Cria ou substitui o avatar do usuario alvo."""
+    content = file.file.read()
+    result = service.upload_avatar(user_id=user_id, content_type=file.content_type or "", content=content)
+    return AvatarResponse(
+        user_id=result.user_id,
+        content_type=result.content_type,
+        size_bytes=result.size_bytes,
+        url=result.url,
+    )
+
+
+@router.get("/{user_id}/avatar", response_model=AvatarResponse)
+def get_user_avatar(
+    user_id: int,
+    _: object = Depends(require_self_or_admin),
+    service: AvatarService = Depends(get_avatar_service),
+) -> AvatarResponse:
+    """Retorna metadados e URL de acesso do avatar."""
+    result = service.get_avatar(user_id=user_id)
+    return AvatarResponse(
+        user_id=result.user_id,
+        content_type=result.content_type,
+        size_bytes=result.size_bytes,
+        url=result.url,
+    )
+
+
+@router.get("/{user_id}/avatar/content")
+def get_user_avatar_content(
+    user_id: int,
+    _: object = Depends(require_self_or_admin),
+    service: AvatarService = Depends(get_avatar_service),
+) -> StreamingResponse:
+    """Entrega binario do avatar para o backend local."""
+    content, content_type = service.get_avatar_content(user_id)
+    return StreamingResponse(iter([content]), media_type=content_type)
+
+
+@router.delete("/{user_id}/avatar", status_code=status.HTTP_200_OK)
+def delete_user_avatar(
+    user_id: int,
+    _: object = Depends(require_self_or_admin),
+    service: AvatarService = Depends(get_avatar_service),
+) -> Response:
+    """Remove o avatar ativo do usuario."""
+    service.delete_avatar(user_id=user_id)
     return Response(status_code=status.HTTP_200_OK)

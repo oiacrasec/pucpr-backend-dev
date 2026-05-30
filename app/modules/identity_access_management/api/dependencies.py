@@ -10,6 +10,11 @@ from app.modules.identity_access_management.repositories.role_repository import 
 from app.modules.identity_access_management.repositories.user_repository import (
     UserRepository,
 )
+from app.modules.identity_access_management.repositories.user_avatar_repository import (
+    UserAvatarRepository,
+)
+from app.modules.identity_access_management.services.avatar_service import AvatarService
+from app.modules.identity_access_management.services.avatar_storage import build_avatar_storage
 from app.modules.identity_access_management.services.auth_service import AuthService
 from app.modules.identity_access_management.services.role_service import RoleService
 from app.modules.identity_access_management.services.user_service import UserService
@@ -39,6 +44,13 @@ def get_role_repository(
     return RoleRepository(session)
 
 
+def get_user_avatar_repository(
+    session: Session = Depends(get_db_session),
+) -> UserAvatarRepository:
+    """Fornece o repositorio de avatares vinculado a sessao atual de banco."""
+    return UserAvatarRepository(session)
+
+
 def get_auth_service(
     user_repository: UserRepository = Depends(get_user_repository),
     password_hasher: PasswordHasher = Depends(get_password_hasher),
@@ -64,3 +76,19 @@ def get_role_service(
 ) -> RoleService:
     """Monta o servico de roles."""
     return RoleService(role_repository, session)
+
+
+def get_avatar_service(
+    settings: Settings = Depends(get_settings),
+    user_repository: UserRepository = Depends(get_user_repository),
+    avatar_repository: UserAvatarRepository = Depends(get_user_avatar_repository),
+    session: Session = Depends(get_db_session),
+) -> AvatarService:
+    """Monta o servico de avatar."""
+    return AvatarService(
+        user_repository=user_repository,
+        avatar_repository=avatar_repository,
+        storage=build_avatar_storage(settings),
+        session=session,
+        settings=settings,
+    )

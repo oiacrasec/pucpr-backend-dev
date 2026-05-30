@@ -10,6 +10,7 @@ from app.modules.identity_access_management.models.user_role import user_roles_t
 
 if TYPE_CHECKING:
     from app.modules.identity_access_management.models.role import Role
+    from app.modules.identity_access_management.models.user_avatar import UserAvatar
 
 
 class User(Base):
@@ -25,6 +26,10 @@ class User(Base):
         secondary=user_roles_table,
         back_populates="users",
         collection_class=set,
+    )
+    avatar: Mapped["UserAvatar | None"] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
 
     @property

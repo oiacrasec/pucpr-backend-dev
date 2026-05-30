@@ -5,10 +5,12 @@ description = "FastAPI implementation of the PUCPR auth server."
 requires-python = ">=3.14"
 dependencies = [
     "alembic==1.18.4",
+    "boto3==1.40.33",
     "email-validator==2.3.0",
     "fastapi==0.136.1",
     "httpx==0.28.1",
     "psycopg[binary]==3.3.4",
+    "python-multipart==0.0.20",
     "pydantic-settings==2.14.0",
     "PyJWT==2.12.1",
     "sqlalchemy==2.0.49",

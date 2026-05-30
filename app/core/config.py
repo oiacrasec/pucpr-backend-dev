@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     jwt_user_claim: str = "user"
     admin_token_expire_hours: int = 1
     user_token_expire_hours: int = 24
+    media_root: str = "storage"
 
     bootstrap_admin_email: str = "admin@admin.com"
     bootstrap_admin_password: str = "admin"
@@ -40,6 +41,16 @@ class Settings(BaseSettings):
     cors_allowed_origins: tuple[str, ...] = ("*",)
     cors_allowed_methods: tuple[str, ...] = ("*",)
     cors_allowed_headers: tuple[str, ...] = ("*",)
+
+    avatar_storage_backend: Literal["local", "s3"] = "local"
+    avatar_max_size_bytes: int = 5 * 1024 * 1024
+    avatar_local_root: str = "avatars"
+    avatar_s3_bucket: str = ""
+    avatar_s3_region: str = "us-east-1"
+    avatar_s3_endpoint_url: str | None = None
+    avatar_s3_access_key_id: str | None = None
+    avatar_s3_secret_access_key: str | None = None
+    avatar_s3_url_expire_seconds: int = 900
 
 
 @lru_cache

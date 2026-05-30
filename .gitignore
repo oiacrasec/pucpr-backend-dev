@@ -23,3 +23,12 @@ dist/
 *.egg-info/
 
 *.log
+
+storage/*
+!/.gitkeep
+
+docs/requisitos/*
+!docs/requisitos/.gitkeep
+
+docs/planejamentos/*
+!docs/planejamentos/.gitkeep
