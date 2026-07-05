@@ -1,6 +1,6 @@
 # PUCPR Backend FastAPI
 
-Implementacao em FastAPI do trabalho final da disciplina de Desenvolvimento de Backend - PUCPR.
+Migração da funcionalidade de Avatar para FastAPI do trabalho final da disciplina de Serviços Mobile em Cloud AWS - PUCPR.
 
 > Branch: 05-entrega-final
 
@@ -11,7 +11,10 @@ Implementacao em FastAPI do trabalho final da disciplina de Desenvolvimento de B
 
 ## Link apresentação
 
-- https://youtu.be/HZGrY7pW0UE
+- https://youtu.be/P5JAaD3lFAM
+
+## + DOCUMENTAÇÃO
+ O arquivo `1 - Funcionalidade avatar.md` contém documentado um passo a passo de criação/config/testes.
 
 ## Decisoes principais
 
